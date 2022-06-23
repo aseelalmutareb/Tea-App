@@ -16,7 +16,8 @@ const { register, login } = require('../controllers/userControllers');
  */
 // add a middleware to lock this route
 router.get('/users', auth, (req, res) => {
-    res.status(200).json(users);
+    const filteredUsers = users.filter(user => user.id == req.user.id);
+    res.json(filteredUsers);
 });
 
 /**
