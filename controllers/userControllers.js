@@ -55,6 +55,25 @@ const register = async (req, res) => {
         });
 };
 
-const login = async (req, res) => {};
+const login = async (req, res) => {
+    const { email, password } = req.body;
+    // find user
+    const user = users.find(user => user.email == email);
+    if(!user) return res.status(404).json({ message: 'Either email or password is incorrect!'});
+    
+    try {
+        if(!password) return res.status(400).json({ message: 'A password was not provided'});
+        // compare passwords
+        const isPasswordCorrect = await bcrypt.compare(password, user.password);
+        if(!isPasswordCorrect) return res.status(404).json({ message: 'Either email or password is incorrect!' });
+
+        // generate access token
+        res.status(200).json({ 
+            token: 'generate token', 
+            message: "You're logged in." });
+    } catch (error) {
+        res.status(500).json({ message: 'Something went wrong..' });
+    }
+};
 
 module.exports = { register, login };

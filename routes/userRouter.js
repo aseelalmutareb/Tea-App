@@ -9,7 +9,7 @@ const { check } = require('express-validator');
 const users = require('../datasets/userData');
 
 // import user controller
-const { register } = require('../controllers/userControllers');
+const { register, login } = require('../controllers/userControllers');
 
 /**
  * @route GET /users
@@ -32,6 +32,13 @@ router.post('/register',
     check('password', 'Password needs to be at least 6 characters long').isLength({min: 6}), // middleware check for password
     register // controller function
 );
+
+/**
+ * @route POST /login
+ * @desc Let a user log in
+ * @access Public
+ */
+router.post('/login', login);
 
 
 module.exports = router;
