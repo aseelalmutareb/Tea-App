@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
-const config = require("config");
+const config = require('config');
+const JWT_SECRET = config.get('jwt_secret.access');
 const { validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
 
@@ -44,7 +45,7 @@ const register = async (req, res) => {
   // sign and generate the token
   jwt.sign(
         payload, 
-        config.get("jwt_secret.access"),
+        JWT_SECRET,
         { expiresIn: '60s' },
         (err, token) => {
             if(err) return res.status(403).json('Access Denied');
@@ -68,9 +69,24 @@ const login = async (req, res) => {
         if(!isPasswordCorrect) return res.status(404).json({ message: 'Either email or password is incorrect!' });
 
         // generate access token
-        res.status(200).json({ 
-            token: 'generate token', 
-            message: "You're logged in." });
+        const payload = {
+            user: {
+              email: email,
+            },
+          };
+          // sign and generate the token
+          jwt.sign(
+                payload, 
+                JWT_SECRET,
+                { expiresIn: '60s' },
+                (err, token) => {
+                    if(err) return res.status(403).json('Access Denied');
+                    res.status(200).json({
+                        token: token,
+                        message: "You're logged in."
+                    });
+                });
+          
     } catch (error) {
         res.status(500).json({ message: 'Something went wrong..' });
     }

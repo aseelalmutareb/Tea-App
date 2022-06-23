@@ -1,8 +1,6 @@
-const jwt = require('jsonwebtoken');
 const express = require('express');
 const router = express.Router();
-const config = require('config');
-const JWT_SECRET = config.get('jwt_secret.access');
+const auth = require('../middlewares/auth');
 const { check } = require('express-validator');
 
 // import users data
@@ -17,7 +15,7 @@ const { register, login } = require('../controllers/userControllers');
  * @access Private
  */
 // add a middleware to lock this route
-router.get('/users', (req, res) => {
+router.get('/users', auth, (req, res) => {
     res.status(200).json(users);
 });
 
