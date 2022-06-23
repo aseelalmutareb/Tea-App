@@ -8,9 +8,9 @@ const token = authHeader && authHeader.split(' ')[1];
 
 if(!token) return res.status(401).json({ message: "Forbidden"});
 
-jwt.verify(token, JWT_SECRET, (err, payload) => {
+jwt.verify(token, JWT_SECRET, (err, user) => {
     if(err) return res.status(403).json({ message: "Unauthorized!" });
-    req.user = payload.user;
+    req.user = user;
     next();
 });
 };

@@ -1,11 +1,9 @@
-const jwt = require("jsonwebtoken");
-const config = require('config');
-const JWT_SECRET = config.get('jwt_secret.access');
 const { validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
 
 // import users data
 const users = require("../datasets/userData");
+const generateToken = require("../helpers/generateToken");
 
 const register = async (req, res) => {
   // validation, sanitization, authorization
@@ -37,23 +35,17 @@ const register = async (req, res) => {
   // authorization with jwt
   // prepare a payload
   const payload = {
-    user: {
       id: user.id,
       name: user.name,
-    },
   };
   // sign and generate the token
-  jwt.sign(
-        payload, 
-        JWT_SECRET,
-        { expiresIn: '60s' },
-        (err, token) => {
-            if(err) return res.status(403).json('Access Denied');
-            res.json({
-                token: token,
-                users: users
-            });
-        });
+  try {
+    const token = await generateToken(payload);
+    res.json({ token: token });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+  
 };
 
 const login = async (req, res) => {
@@ -70,22 +62,12 @@ const login = async (req, res) => {
 
         // generate access token
         const payload = {
-            user: {
               email: email,
-            },
-          };
-          // sign and generate the token
-          jwt.sign(
-                payload, 
-                JWT_SECRET,
-                { expiresIn: '60s' },
-                (err, token) => {
-                    if(err) return res.status(403).json('Access Denied');
-                    res.status(200).json({
-                        token: token,
-                        message: "You're logged in."
-                    });
-                });
+            };
+            
+        // sign and generate the token
+            const token = await generateToken(payload);
+            res.json({ token: token, message: "You're logged in." });
           
     } catch (error) {
         res.status(500).json({ message: 'Something went wrong..' });
