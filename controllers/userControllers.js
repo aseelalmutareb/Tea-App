@@ -62,7 +62,8 @@ const login = async (req, res) => {
 
         // generate access token
         const payload = {
-              email: email,
+              id: user.id,
+              name: user.name
             };
             
         // sign and generate the token
