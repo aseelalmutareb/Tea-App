@@ -30,21 +30,8 @@ const register = async (req, res) => {
     }
   );
 
-  // authorization with jwt
-  // prepare a payload
-  const payload = {
-      id: user._id,
-      name: user.name,
-  };
+  user && res.status(201).json('Successfully registered. Please log in.')
 
-  // sign and generate the token
-  try {
-    const token = await generateToken(payload);
-    res.json({ token: token });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-  
 };
 
 const login = async (req, res) => {
