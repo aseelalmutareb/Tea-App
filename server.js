@@ -1,10 +1,15 @@
 const express = require('express');
 const config = require('config');
+const connect = require('./helpers/dbConnect');
+
 
 const app = express();
 
 // body parser
 app.use(express.json());
+
+// connect to db
+connect();
 
 // routes
 const userRouter = require('./routes/userRouter');
