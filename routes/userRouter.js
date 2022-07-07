@@ -3,8 +3,7 @@ const router = express.Router();
 const auth = require('../middlewares/auth');
 const { check } = require('express-validator');
 
-// import users data
-const users = require('../datasets/userData');
+const User = require('../models/User');
 
 // import user controller
 const { register, login } = require('../controllers/userControllers');
@@ -15,13 +14,13 @@ const { register, login } = require('../controllers/userControllers');
  * @access Private
  */
 // add a middleware to lock this route
-router.get('/users', auth, (req, res) => {
-    const filteredUsers = users.filter(user => user.id == req.user.id);
+router.get('/users', auth, async (req, res) => {
+    const filteredUsers = await User.find({_id: req.user.id});
     res.json(filteredUsers);
 });
 
 /**
- * @route POST /register
+ * @route POST /registerlog
  * @desc Register a user
  * @access Public
  */

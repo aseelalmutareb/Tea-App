@@ -62,7 +62,7 @@ const login = async (req, res) => {
 
         // generate access token
         const payload = {
-              id: user.id,
+              id: user._id,
               name: user.name
             };
             
